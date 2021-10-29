@@ -51,8 +51,7 @@ ast_t *parse_statements(parser_t *parser) {
     ast_t *next_statement = parse_statement(parser);
 
     compound->node.value = (ast_t **)realloc(
-        compound->node.value, sizeof(ast_t *) * compound->node.size);
-
+        compound->node.value, sizeof(ast_t *) * (compound->node.size + 1));
     compound->node.value[compound->node.size] = next_statement;
   }
 
@@ -118,9 +117,9 @@ ast_t *parse_function_arguments(parser_t *parser) {
 
     function_arguments->node.size++;
 
-    function_arguments->node.value =
-        (ast_t **)realloc(function_arguments->node.value,
-                          sizeof(ast_t *) * function_arguments->node.size);
+    function_arguments->node.value = (ast_t **)realloc(
+        function_arguments->node.value,
+        sizeof(ast_t *) * (function_arguments->node.size + 1));
 
     function_arguments->node.value[function_arguments->node.size] =
         new_argument;
@@ -139,13 +138,13 @@ ast_t *parse_variable_declaration(parser_t *parser) {
   expect(parser, TokenStruct::TOKEN_TYPE_IDENTIFIER); // var name
   expect(parser, TokenStruct::TOKEN_TYPE_EQUALS);     // equals
 
-  if (strcmp(var_type, "str") == 0 && parser->current_token->type != TokenStruct::TOKEN_TYPE_STRING) {
+  if (strcmp(var_type, "str") == 0 &&
+      parser->current_token->type != TokenStruct::TOKEN_TYPE_STRING) {
     printf("Expected string, not %s\n", parser->current_token->value);
     exit(1);
   }
 
   ast_t *value = parse_expression(parser);
-
 
   ast_t *variable = init_ast(ASTStruct::AST_NODE_TYPE_VARIABLE_DECLARATION);
 

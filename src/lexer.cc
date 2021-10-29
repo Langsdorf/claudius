@@ -127,7 +127,7 @@ token_t *parse_id(lexer_t *l) {
 }
 
 char *get_as_string(lexer_t *l) {
-  char *s = (char *)malloc(sizeof(char));
+  char *s = (char *)malloc(sizeof(char) + 1);
   s[0] = l->c;
   s[1] = '\0';
 
