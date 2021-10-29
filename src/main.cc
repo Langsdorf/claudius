@@ -13,8 +13,6 @@ int main() {
   ast_t *root = parse(parser);
 
   std::cout << "root: " << root->type << std::endl;
-  std::cout << "root: " << root->node.value[0]->type << std::endl;
-  std::cout << "root3: " << root->node.value[1]->node.value[0]->node.value[1]->node.value[0]->node.name << std::endl;
 
   return 0;
 }

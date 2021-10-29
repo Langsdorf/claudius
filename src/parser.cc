@@ -2,6 +2,8 @@
 #include "include/ast.h"
 #include "include/lexer.h"
 #include "include/main.h"
+#include "include/token.h"
+#include <cstdlib>
 #include <iostream>
 
 parser_t *init_parser(lexer_t *lexer) {
@@ -58,7 +60,6 @@ ast_t *parse_statements(parser_t *parser) {
 }
 
 ast_t *parse_expression(parser_t *parser) {
-
   switch (parser->current_token->type) {
   case TokenStruct::TOKEN_TYPE_STRING:
     return parse_string(parser);
@@ -129,6 +130,8 @@ ast_t *parse_function_arguments(parser_t *parser) {
 }
 
 ast_t *parse_variable_declaration(parser_t *parser) {
+  char *var_type = parser->current_token->value;
+
   expect(parser, TokenStruct::TOKEN_TYPE_IDENTIFIER); // var type
 
   char *string = parser->current_token->value;
@@ -136,7 +139,13 @@ ast_t *parse_variable_declaration(parser_t *parser) {
   expect(parser, TokenStruct::TOKEN_TYPE_IDENTIFIER); // var name
   expect(parser, TokenStruct::TOKEN_TYPE_EQUALS);     // equals
 
+  if (strcmp(var_type, "str") == 0 && parser->current_token->type != TokenStruct::TOKEN_TYPE_STRING) {
+    printf("Expected string, not %s\n", parser->current_token->value);
+    exit(1);
+  }
+
   ast_t *value = parse_expression(parser);
+
 
   ast_t *variable = init_ast(ASTStruct::AST_NODE_TYPE_VARIABLE_DECLARATION);
 
