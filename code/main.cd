@@ -1,0 +1,3 @@
+str name = "hello claudius";
+
+prnt! name;
